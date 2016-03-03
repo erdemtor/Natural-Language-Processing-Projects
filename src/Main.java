@@ -14,7 +14,7 @@ import java.util.*;
  */
 public class Main {
     static HashMap<String,HashMap<String,Integer>> fullTrainingData = new HashMap<>(); // this is from author to a hashmap <word,freq>
-    static HashMap<String,ArrayList<String>> fullTestData = new HashMap<>(); // this is from author to their list of test texts
+    static HashMap<String,ArrayList<HashMap<String,Integer>>> fullTestData = new HashMap<>(); // this is from author to their list of test texts
     static HashMap<String,ArrayList<String>> testDataPaths = new HashMap<>();
     static HashMap<String,Double> commaNumbers = new HashMap<>();
     static HashMap<String,Integer> totalNumOfWords = new HashMap<>();
@@ -24,7 +24,7 @@ public class Main {
 
     public static void main(String[] args) throws FileNotFoundException {
         fillTheData("C:\\Users\\Erdem\\Desktop\\NLP\\Natural-Language-Processing-Project-1\\69yazar\\raw_texts",true);
-        test()
+        System.out.println(test(fullTestData.get("elifSafak").get(1)));
 
     }
 
@@ -119,12 +119,25 @@ public class Main {
             authorFreqs = fullTrainingData.get(authorName);
         }
         else {
-            ArrayList<String> authorTextsTokenized = new ArrayList<>();
+            ArrayList<HashMap<String,Integer>> authorTextsTokenized = new ArrayList<>();
             if (fullTestData.containsKey(authorName)){
 
                 authorTextsTokenized = fullTestData.get(authorName);
             }
-            authorTextsTokenized.add(fullText);
+            HashMap<String ,Integer> authorFreqsTest = new HashMap<>();
+            String[] words = fullText.split(" ");
+            for (int i = 0; i <words.length ; i++) {
+                String word = words[i];
+                if(authorFreqsTest.containsKey(word)){ // specific to the author
+                    authorFreqsTest.put(word,authorFreqsTest.get(word)+1);
+                }
+                else{
+                    authorFreqsTest.put(word,1);
+                }
+            }
+            authorTextsTokenized.add(authorFreqsTest);
+
+
             fullTestData.put(authorName,authorTextsTokenized);
             return false;
         }
@@ -162,7 +175,7 @@ public class Main {
 
 
     public static String test(HashMap<String,Integer> document){
-        double max = Double.MIN_VALUE;
+        double max = -1*Double.MAX_VALUE;
         String authorRes = "";
         double alpha = 1;
         double vocabSize = corpus.size(); // tum sozlukte unique sayi
@@ -171,8 +184,12 @@ public class Main {
             double pc = Math.log(numberOfDocuments.get(author) / totalNumOfDocuments);
             double rest = pc;
             for (String word: document.keySet()) {
-                double occcurence = document.get(word); // will be used as power
-                double insideValue = Math.log(( fullTrainingData.get(author).get(word)+ alpha)/ (vocabSize +totalNumberOfWords));
+                double occurrence = document.get(word); // will be used as power
+                double data = 0;
+                if (fullTrainingData.get(author).containsKey(word)){
+                     data = fullTrainingData.get(author).get(word);
+                }
+                double insideValue = occurrence*Math.log((data + alpha)/ (vocabSize +totalNumberOfWords));
                 rest += insideValue;
             }
             if (rest> max){
