@@ -16,24 +16,42 @@ public class Main {
     static HashMap<String,HashMap<String,Integer>> fullTrainingData = new HashMap<>(); // this is from author to a hashmap <word,freq>
     static HashMap<String,ArrayList<String>> fullTestData = new HashMap<>(); // this is from author to their list of test texts
     static HashMap<String,ArrayList<String>> testDataPaths = new HashMap<>();
-
+    static HashMap<String,Double> commaNumbers = new HashMap<>();
+    static HashMap<String,Integer> totalNumOfWords = new HashMap<>();
+    static HashMap<String , Integer> corpus = new HashMap<>();
+    static HashMap<String,Integer> numberOfDocuments = new HashMap<>();
+    static double totalNumOfDocuments = 0 ;
 
     public static void main(String[] args) throws FileNotFoundException {
-
-
-        fillTheData("C:\\Users\\Erdem\\Desktop\\NLP\\Natural-Language-Processing-Project-1\\69yazar\\raw_texts");
-        System.out.println("asd");
+        fillTheData("C:\\Users\\Erdem\\Desktop\\NLP\\Natural-Language-Processing-Project-1\\69yazar\\raw_texts",true);
+        test()
 
     }
 
+    public static void calcCommaFreq(String authorName){
+        int totalWordCount = 0;
+        for (String x :fullTrainingData.get(authorName).keySet() ) {
+            totalWordCount+= fullTrainingData.get(authorName).get(x);
+        }
+        commaNumbers.put(authorName, commaNumbers.get(authorName)/totalWordCount);
+        totalNumOfWords.put(authorName, totalWordCount);
+    }
 
-    public static void fillTheData(String sDir) throws FileNotFoundException {
-        File[] faFiles = new File(sDir).listFiles();
+    public static void fillTheData(String sDir, boolean first) throws FileNotFoundException {
+        File dir =  new File(sDir);
+        File[] faFiles =dir.listFiles();
+        if(!first)
+        {
+            numberOfDocuments.put(dir.getName(),faFiles.length);
+            totalNumOfDocuments += faFiles.length;
+        }
         for(File file: faFiles){
             if(file.isDirectory()){
-                fillTheData(file.getAbsolutePath());
+                fillTheData(file.getAbsolutePath(), false);
+                calcCommaFreq(file.getName());
             }else{
                 parseFile(file.getAbsolutePath());
+
             }
         }
     }
@@ -48,7 +66,7 @@ public class Main {
     public static void parseFile(String fullPath) throws FileNotFoundException {
         String[] filePathNames = fullPath.split("\\\\");
         String authorName = filePathNames[filePathNames.length-2];
-
+        int commaNum = 0;
         Path path = Paths.get(fullPath);
 
         Charset charset = Charset.forName("ISO-8859-1");
@@ -60,6 +78,17 @@ public class Main {
                 builder.append(" ");
             }
             String authorAllText = builder.toString();
+            for (int i = 0; i < authorAllText.length() ; i++) {
+                char letter = authorAllText.charAt(i);
+                if(letter == ','){
+                    commaNum++;
+                }
+            }
+            if(commaNumbers.containsKey(authorName)){
+                commaNumbers.put(authorName,commaNumbers.get(authorName)+ commaNum ) ;
+            }else {
+                commaNumbers.put(authorName, (double) commaNum) ;
+            }
             String tokenizedAuthorAllText = tokenizer(authorAllText);
             if(!freqArrange(authorName , tokenizedAuthorAllText)){
                 if (testDataPaths.containsKey(authorName) ){
@@ -103,12 +132,19 @@ public class Main {
         String[] words = fullText.split(" ");
         for (int i = 0; i <words.length ; i++) {
             String word = words[i];
-            if(authorFreqs.containsKey(word)){
+            if(authorFreqs.containsKey(word)){ // specific to the author
                 authorFreqs.put(word,authorFreqs.get(word)+1);
             }
             else{
                 authorFreqs.put(word,1);
             }
+            if(corpus.containsKey(word)){ // doesnt matter which author wrote it, just builds up the dictionary
+                corpus.put(word, corpus.get(word)+1);
+            }
+            else {
+                corpus.put(word,1);
+            }
+
         }
         return true;
     }
@@ -124,6 +160,31 @@ public class Main {
         return false;
     }
 
+
+    public static String test(HashMap<String,Integer> document){
+        double max = Double.MIN_VALUE;
+        String authorRes = "";
+        double alpha = 1;
+        double vocabSize = corpus.size(); // tum sozlukte unique sayi
+        for (String author: numberOfDocuments.keySet()) {
+            double totalNumberOfWords = totalNumOfWords.get(author); // o yazarin kac tane kelimesi var, kac tane ayni oldugu onemsiz hepsi sayiliyor
+            double pc = Math.log(numberOfDocuments.get(author) / totalNumOfDocuments);
+            double rest = pc;
+            for (String word: document.keySet()) {
+                double occcurence = document.get(word); // will be used as power
+                double insideValue = Math.log(( fullTrainingData.get(author).get(word)+ alpha)/ (vocabSize +totalNumberOfWords));
+                rest += insideValue;
+            }
+            if (rest> max){
+                authorRes = author;
+                max = rest;
+            }
+
+
+        }
+        return authorRes;
+
+    }
 
 
 
