@@ -1,30 +1,28 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
-/**
+/*
  * Created by Erdem on 3/3/2016.
  *
  *
  */
 public class Main {
     static HashMap<String,HashMap<String,Integer>> fullTrainingData = new HashMap<>(); // this is from author to a hashmap <word,freq>
-    static HashMap<String,ArrayList<String>> fullTestDate = new HashMap<>(); // this is from author to their list of test texts
+    static HashMap<String,ArrayList<String>> fullTestData = new HashMap<>(); // this is from author to their list of test texts
+    static HashMap<String,ArrayList<String>> testDataPaths = new HashMap<>();
+
+
     public static void main(String[] args) throws FileNotFoundException {
 
 
-        // fillTheData("C:\\Users\\Erdem\\Desktop\\NLP\\Natural-Language-Processing-Project-1\\69yazar\\raw_texts");
-
-        System.out.println(tokenizer("asd 102.2 102. erd-emdsd asdklasr@#(asdaskfj"));
+        fillTheData("C:\\Users\\Erdem\\Desktop\\NLP\\Natural-Language-Processing-Project-1\\69yazar\\raw_texts");
+        System.out.println("asd");
 
     }
 
@@ -40,13 +38,12 @@ public class Main {
         }
     }
 
-    /**
+    /*
      *
      * Given path is for the considered for training data and will be filled
      *
      *
-     * @param fullPath
-     * @throws FileNotFoundException
+
      */
     public static void parseFile(String fullPath) throws FileNotFoundException {
         String[] filePathNames = fullPath.split("\\\\");
@@ -59,11 +56,22 @@ public class Main {
             List<String> lines = Files.readAllLines(path, charset);
             StringBuilder builder = new StringBuilder();
             for (String line : lines) {
-                builder.append(line);
+                builder.append(line.toLowerCase());
+                builder.append(" ");
             }
             String authorAllText = builder.toString();
             String tokenizedAuthorAllText = tokenizer(authorAllText);
-            freqArrange(authorName , tokenizedAuthorAllText);
+            if(!freqArrange(authorName , tokenizedAuthorAllText)){
+                if (testDataPaths.containsKey(authorName) ){
+                    testDataPaths.get(authorName).add(fullPath);
+                    testDataPaths.put(authorName,testDataPaths.get(authorName));
+                }
+                else {
+                    ArrayList<String> paths = new ArrayList<>();
+                    paths.add(fullPath);
+                    testDataPaths.put(authorName,paths);
+                }
+            }
 
         } catch (IOException e) {
             System.out.println(e);
@@ -72,13 +80,26 @@ public class Main {
 
     }
 
-    public static void freqArrange(String authorName, String fullText){
+    public static boolean freqArrange(String authorName, String fullText){
         HashMap<String ,Integer> authorFreqs;
-        if (!fullTrainingData.containsKey(authorName)){
-            authorFreqs = new HashMap<>();
-            fullTrainingData.put(authorName,authorFreqs);
+        if(!isTest()){
+            if (!fullTrainingData.containsKey(authorName)){
+                authorFreqs = new HashMap<>();
+                fullTrainingData.put(authorName,authorFreqs);
+            }
+            authorFreqs = fullTrainingData.get(authorName);
         }
-        authorFreqs = fullTrainingData.get(authorName);
+        else {
+            ArrayList<String> authorTextsTokenized = new ArrayList<>();
+            if (fullTestData.containsKey(authorName)){
+
+                authorTextsTokenized = fullTestData.get(authorName);
+            }
+            authorTextsTokenized.add(fullText);
+            fullTestData.put(authorName,authorTextsTokenized);
+            return false;
+        }
+
         String[] words = fullText.split(" ");
         for (int i = 0; i <words.length ; i++) {
             String word = words[i];
@@ -88,18 +109,27 @@ public class Main {
             else{
                 authorFreqs.put(word,1);
             }
+        }
+        return true;
+    }
 
+    public static boolean isTest(){
+        Random random = new Random();
+        int answer = random.nextInt(100) + 1;
+        if(answer > 70){
+
+            return true;
         }
 
-
+        return false;
     }
 
 
 
-    /**
-     * tokenizes a whole group of words including the new lines and tab blanks and such
-     * @param words
-     * @return
+
+
+    /*
+     * tokenize a whole group of words including the new lines and tab blanks and such
      */
     public static String tokenizer(String words){
         StringBuilder builder = new StringBuilder();
@@ -120,10 +150,9 @@ public class Main {
         return builder.toString();
     }
 
-    /**
+    /*
      *  check a potential token is really a pretty token, if not avoid unnecessary chars and create a good token  out of it
-     * @param potentialToken
-     * @return
+
      */
     private static String tokenizeString(String potentialToken) {
         StringBuilder stringBuilder = new StringBuilder();
@@ -149,10 +178,8 @@ public class Main {
         return stringBuilder.toString();
     }
 
-    /**
+    /*
      * checks a string is a double returns accordingly
-     * @param str
-     * @return
      */
     public static boolean isDouble(String str) {
         try {
