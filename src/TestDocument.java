@@ -4,16 +4,16 @@ import java.util.HashMap;
  * Created by Erdem on 3/10/2016.
  */
 public class TestDocument {
-    double avgSentenceLength = 0;
+    double avgWordLength = 0;
     HashMap<String,Integer> documentData = new HashMap<>();
     String author;
 
-    public double getAvgSentenceLength() {
-        return avgSentenceLength;
+    public double getAvgWordLength() {
+        return avgWordLength;
     }
 
-    public void setAvgSentenceLength(double avgSentenceLength) {
-        this.avgSentenceLength = avgSentenceLength;
+    public void setAvgWordLength(double avgWordLength) {
+        this.avgWordLength = avgWordLength;
     }
 
     public HashMap<String, Integer> getDocumentData() {
