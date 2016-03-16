@@ -19,8 +19,7 @@ public class Classifier {
         new File(parentPath+"\\trainingData").mkdir();
     fillTheData(sDir);
 
-        System.out.println("Test Data path: "+ parentPath+"\\testData");
-        System.out.println("Training Data path: "+ parentPath+"\\trainingData");
+      
 
     }
 

@@ -1,3 +1,5 @@
+
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -21,8 +23,10 @@ public class Main {
     static double totalNumOfDocuments = 0 ;
     static HashMap<String,Double> avgWordLength = new HashMap<>();
     static ArrayList<TestDocument> testDocs = new ArrayList<>();
-
-
+    static HashMap<String , ArrayList<Integer>> sentenceNumberData = new HashMap<>();
+    static HashMap<String , Double> sentenceNumbers = new HashMap<>();
+    static HashMap<String , ArrayList<Integer>> commaWordData = new HashMap<>();
+    static HashMap<String , Double> commaWord = new HashMap<>();
     public static void delete(File f) throws IOException {
         if (f.isDirectory()) {
             for (File c : f.listFiles())
@@ -67,6 +71,35 @@ public class Main {
     public static void train(String sDir) throws FileNotFoundException {
         fillTheData(sDir);
         calculateAvgWordLength();
+        calculateSentenceNumber();
+        calculateAvgCommaPerWord();
+    }
+
+    private static void calculateAvgCommaPerWord() {
+        for (String author: commaWordData.keySet()) {
+            double total = 0;
+            int counter =0;
+            for (int numberOfCommas:commaWordData.get(author)) {
+                total += numberOfCommas;
+                counter++;
+            }
+            commaWord.put(author,total/(counter*totalNumOfWords.get(author)));
+        }
+
+    }
+
+    private static void calculateSentenceNumber() {
+
+        for (String author: sentenceNumberData.keySet()) {
+            double total = 0;
+            double counter =0;
+            for (int length:sentenceNumberData.get(author)) {
+                total += length;
+                counter++;
+            }
+
+            sentenceNumbers.put(author,total/(counter*totalNumOfWords.get(author)));
+        }
     }
 
     private static void calculateAvgWordLength() {
@@ -131,8 +164,11 @@ public class Main {
                 builder.append(" ");
             }
             String authorAllText = builder.toString();
-            String tokenizedAuthorAllText = tokenizer(authorAllText);
+
+            String tokenizedAuthorAllText = Tokenizer.tokenizer(authorAllText);
             String[] words = tokenizedAuthorAllText.split(" ");
+            testDoc.setNumbOfSentence((authorAllText.length() - authorAllText.replace(".", "").length())/words.length);
+            testDoc.setCommaWord((authorAllText.length() - authorAllText.replace(",", "").length())/words.length);
             HashMap<String,Integer> documentData = testDoc.getDocumentData();
             double total = 0;
             for (int i = 0; i <words.length ; i++) {
@@ -145,16 +181,13 @@ public class Main {
                     documentData.put(word,1);
                 }
             }
+
             testDoc.setAvgWordLength(total/(double) words.length);
             testDoc.setDocumentData(documentData);
             testDocs.add(testDoc);
         } catch (IOException e) {
             System.out.println(e);
         }
-
-
-
-
     }
 
 
@@ -178,12 +211,23 @@ public class Main {
                 builder.append(" ");
             }
             String authorAllText = builder.toString();
-            String tokenizedAuthorAllText = tokenizer(authorAllText);
+
+            // sentence number avg
+            ArrayList<Integer> sentenceNumArray = new ArrayList<>();
+            if (sentenceNumberData.containsKey(authorName)) {
+                sentenceNumArray = sentenceNumberData.get(authorName);
+            }
+            sentenceNumArray.add(authorAllText.length() - authorAllText.replace(".", "").length());
+            sentenceNumberData.put(authorName,sentenceNumArray);
+            // comma number avg
+            ArrayList<Integer> commaWordDataArr = new ArrayList<>();
+            if (commaWordData.containsKey(authorName)) {
+                commaWordDataArr = commaWordData.get(authorName);
+            }
+            commaWordDataArr.add(authorAllText.length() - authorAllText.replace(",", "").length());
+            commaWordData.put(authorName,commaWordDataArr);
+            String tokenizedAuthorAllText = Tokenizer.tokenizer(authorAllText);
             freqArrange(authorName, tokenizedAuthorAllText);
-
-
-
-
         } catch (IOException e) {
             System.out.println(e);
         }
@@ -236,6 +280,7 @@ public class Main {
         double max = -1*Double.MAX_VALUE;
         double min = Double.MAX_VALUE;
         String authorRes = "";
+        String authorMin = "";
         double alpha = 1;
         HashMap<String ,Integer> document = testDoc.getDocumentData();
         double vocabSize = corpus.size(); // tum sozlukte unique sayi
@@ -254,73 +299,36 @@ public class Main {
                 rest += insideValue;
                 counter++;
             }
-               rest += Math.abs(avgWordLength.get(author) - testDoc.getAvgWordLength())*1000;
+            rest -= Math.abs(avgWordLength.get(author) - testDoc.getAvgWordLength())*1000;
+            rest -= Math.abs(sentenceNumbers.get(author) - testDoc.getNumbOfSentence())*100;
+            rest -= Math.abs(commaWord.get(author) - testDoc.getCommaWord())*100;
             if (rest> max){
                 authorRes = author;
                 max = rest;
             }
+            if(min > rest){
+
+                min =rest;
+                authorMin = author;
+
+            }
 
         }
+
+       /* System.out.println("resVAL: " +max);
+        System.out.println("AVG WORD LENGTH value: "+ Math.abs(avgWordLength.get(authorRes) - testDoc.getAvgWordLength())*100);
+        System.out.println("sentenceNumbers value: "+ Math.abs(sentenceNumbers.get(authorRes) - testDoc.getNumbOfSentence())*100);
+        System.out.println("commaWord value: "+ Math.abs(commaWord.get(authorRes) - testDoc.getCommaWord())*100);
+        System.out.println("************************");
+        System.out.println("resVAL: " +min);
+        System.out.println("AVG WORD LENGTH value: "+ Math.abs(avgWordLength.get(authorMin) - testDoc.getAvgWordLength())*100);
+        System.out.println("sentenceNumbers value: "+ Math.abs(sentenceNumbers.get(authorMin) - testDoc.getNumbOfSentence())*100);
+        System.out.println("commaWord value: "+ Math.abs(commaWord.get(authorMin) - testDoc.getCommaWord())*100);
+
+        System.out.println("===================================================================");*/
         return authorRes;
     }
-    /*
-     * tokenize a whole group of words including the new lines and tab blanks and such
-     */
-    public static String tokenizer(String words){
-        StringBuilder builder = new StringBuilder();
-        Scanner scanWords = new Scanner(words);
-        while (scanWords.hasNextLine()){
-            String line = scanWords.nextLine();
-            Scanner scanLine = new Scanner(line);
-            while (scanLine.hasNext()){
-                String potentialToken = scanLine.next();
-                String token = tokenizeString(potentialToken);
-                builder.append(token);
-                builder.append(" ");
-            }
-            scanLine.close();
-        }
-        scanWords.close();
-
-        return builder.toString();
-    }
-
-    /*
-     *  check a potential token is really a pretty token, if not avoid unnecessary chars and create a good token  out of it
-     */
-    private static String tokenizeString(String potentialToken) {
-        StringBuilder stringBuilder = new StringBuilder();
-        if (potentialToken.length() > 0) { // parseDouble thinks "1980." a double. avoid that.
-            if (!Character.isDigit(potentialToken.charAt(potentialToken.length() - 1)) && !Character.isLetter(potentialToken.charAt(potentialToken.length() - 1))) {
-                potentialToken = potentialToken.substring(0, potentialToken.length() - 1);
-            }
-        }
-        if(isDouble(potentialToken) && isDouble(potentialToken.replace(",","."))){
-
-            return potentialToken;
-        }
-        else{
-            for (int j = 0; j < potentialToken.length(); j++) {
-                if (Character.isDigit(potentialToken.charAt(j)) || Character.isLetter(potentialToken.charAt(j))) {
-
-                    stringBuilder.append(potentialToken.charAt(j));
-                }
-            }
 
 
-        }
-        return stringBuilder.toString();
-    }
-
-    /*
-     * checks a string is a double returns accordingly
-     */
-    public static boolean isDouble(String str) {
-        try {
-            Double.parseDouble(str);
-            return true;
-        } catch (NumberFormatException nfe) {}
-        return false;
-    }
 
 }

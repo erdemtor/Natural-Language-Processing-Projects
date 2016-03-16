@@ -5,6 +5,17 @@ import java.util.HashMap;
  */
 public class TestDocument {
     double avgWordLength = 0;
+    double numbOfSentence = 0;
+    double commaWord = 0;
+
+    public double getCommaWord() {
+        return commaWord;
+    }
+
+    public void setCommaWord(double commaWord) {
+        this.commaWord = commaWord;
+    }
+
     HashMap<String,Integer> documentData = new HashMap<>();
     String author;
 
@@ -18,6 +29,14 @@ public class TestDocument {
 
     public HashMap<String, Integer> getDocumentData() {
         return documentData;
+    }
+
+    public double getNumbOfSentence() {
+        return numbOfSentence;
+    }
+
+    public void setNumbOfSentence(double numbOfSentence) {
+        this.numbOfSentence = numbOfSentence;
     }
 
     public void setDocumentData(HashMap<String, Integer> documentData) {
