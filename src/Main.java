@@ -27,6 +27,8 @@ public class Main {
     static HashMap<String , Double> sentenceNumbers = new HashMap<>();
     static HashMap<String , ArrayList<Integer>> commaWordData = new HashMap<>();
     static HashMap<String , Double> commaWord = new HashMap<>();
+    static HashMap<String , ArrayList<Integer>> questionMarkData = new HashMap<>();
+    static HashMap<String , Double> questionmarks = new HashMap<>();
     public static void delete(File f) throws IOException {
         if (f.isDirectory()) {
             for (File c : f.listFiles())
@@ -73,6 +75,20 @@ public class Main {
         calculateAvgWordLength();
         calculateSentenceNumber();
         calculateAvgCommaPerWord();
+        calculateQuestionMark();
+    }
+
+    private static void calculateQuestionMark() {
+        for (String author: questionMarkData.keySet()) {
+            double total = 0;
+            double counter =0;
+            for (int numberOfCommas:questionMarkData.get(author)) {
+                total += numberOfCommas;
+                counter++;
+            }
+            questionmarks.put(author,((double)total)/(counter*totalNumOfWords.get(author)));
+        }
+
     }
 
     private static void calculateAvgCommaPerWord() {
@@ -169,6 +185,7 @@ public class Main {
             String[] words = tokenizedAuthorAllText.split(" ");
             testDoc.setNumbOfSentence((authorAllText.length() - authorAllText.replace(".", "").length())/words.length);
             testDoc.setCommaWord((authorAllText.length() - authorAllText.replace(",", "").length())/words.length);
+            testDoc.setCommaWord((authorAllText.length() - authorAllText.replace("?", "").length())/words.length);
             HashMap<String,Integer> documentData = testDoc.getDocumentData();
             double total = 0;
             for (int i = 0; i <words.length ; i++) {
@@ -226,6 +243,16 @@ public class Main {
             }
             commaWordDataArr.add(authorAllText.length() - authorAllText.replace(",", "").length());
             commaWordData.put(authorName,commaWordDataArr);
+            // questionMarkavg
+            ArrayList<Integer> questionArr = new ArrayList<>();
+            if (questionMarkData.containsKey(authorName)) {
+                questionArr = questionMarkData.get(authorName);
+            }
+            questionArr.add(authorAllText.length() - authorAllText.replace("?", "").length());
+            questionMarkData.put(authorName,questionArr);
+
+
+
             String tokenizedAuthorAllText = Tokenizer.tokenizer(authorAllText);
             freqArrange(authorName, tokenizedAuthorAllText);
         } catch (IOException e) {
@@ -300,8 +327,10 @@ public class Main {
                 counter++;
             }
             rest -= Math.abs(avgWordLength.get(author) - testDoc.getAvgWordLength())*1000;
-            rest -= Math.abs(sentenceNumbers.get(author) - testDoc.getNumbOfSentence())*100;
-            rest -= Math.abs(commaWord.get(author) - testDoc.getCommaWord())*100;
+            rest -= Math.abs(sentenceNumbers.get(author) - testDoc.getNumbOfSentence())*10;
+            rest -= Math.abs(commaWord.get(author) - testDoc.getCommaWord())*500;
+            rest -= Math.abs(questionmarks.get(author) - testDoc.getQuestionMark())*10;
+            //System.out.println(Math.abs(questionmarks.get(author) - testDoc.getQuestionMark()));
             if (rest> max){
                 authorRes = author;
                 max = rest;

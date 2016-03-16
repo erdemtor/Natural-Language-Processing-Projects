@@ -7,6 +7,15 @@ public class TestDocument {
     double avgWordLength = 0;
     double numbOfSentence = 0;
     double commaWord = 0;
+    double questionMark = 0;
+
+    public double getQuestionMark() {
+        return questionMark;
+    }
+
+    public void setQuestionMark(double questionMark) {
+        this.questionMark = questionMark;
+    }
 
     public double getCommaWord() {
         return commaWord;
