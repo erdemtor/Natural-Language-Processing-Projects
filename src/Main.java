@@ -70,6 +70,7 @@ public class Main {
         return succRate;
     }
 
+
     public static void train(String sDir) throws FileNotFoundException {
         fillTheData(sDir);
         calculateAvgWordLength();
@@ -308,7 +309,7 @@ public class Main {
         double min = Double.MAX_VALUE;
         String authorRes = "";
         String authorMin = "";
-        double alpha = 1;
+        double alpha = 0.1;
         HashMap<String ,Integer> document = testDoc.getDocumentData();
         double vocabSize = corpus.size(); // tum sozlukte unique sayi
         for (String author: fullTrainingData.keySet()) { // considering all the authors if they are the best
@@ -322,39 +323,22 @@ public class Main {
                 if (fullTrainingData.get(author).containsKey(word)){
                     data = fullTrainingData.get(author).get(word);
                 }
-                double insideValue = occurrence*Math.log((data + alpha)/ (vocabSize +totalNumberOfWords));
+                double insideValue = occurrence*Math.log((data + alpha)/ (alpha*vocabSize +totalNumberOfWords));
                 rest += insideValue;
                 counter++;
             }
-            rest -= Math.abs(avgWordLength.get(author) - testDoc.getAvgWordLength())*1000;
+            rest -= Math.abs(avgWordLength.get(author) - testDoc.getAvgWordLength())*10;
             rest -= Math.abs(sentenceNumbers.get(author) - testDoc.getNumbOfSentence())*10;
             rest -= Math.abs(commaWord.get(author) - testDoc.getCommaWord())*500;
-            rest -= Math.abs(questionmarks.get(author) - testDoc.getQuestionMark())*10;
-            //System.out.println(Math.abs(questionmarks.get(author) - testDoc.getQuestionMark()));
+            rest -= Math.abs(questionmarks.get(author) - testDoc.getQuestionMark())*100;
             if (rest> max){
                 authorRes = author;
                 max = rest;
             }
-            if(min > rest){
 
-                min =rest;
-                authorMin = author;
-
-            }
 
         }
 
-       /* System.out.println("resVAL: " +max);
-        System.out.println("AVG WORD LENGTH value: "+ Math.abs(avgWordLength.get(authorRes) - testDoc.getAvgWordLength())*100);
-        System.out.println("sentenceNumbers value: "+ Math.abs(sentenceNumbers.get(authorRes) - testDoc.getNumbOfSentence())*100);
-        System.out.println("commaWord value: "+ Math.abs(commaWord.get(authorRes) - testDoc.getCommaWord())*100);
-        System.out.println("************************");
-        System.out.println("resVAL: " +min);
-        System.out.println("AVG WORD LENGTH value: "+ Math.abs(avgWordLength.get(authorMin) - testDoc.getAvgWordLength())*100);
-        System.out.println("sentenceNumbers value: "+ Math.abs(sentenceNumbers.get(authorMin) - testDoc.getNumbOfSentence())*100);
-        System.out.println("commaWord value: "+ Math.abs(commaWord.get(authorMin) - testDoc.getCommaWord())*100);
-
-        System.out.println("===================================================================");*/
         return authorRes;
     }
 
