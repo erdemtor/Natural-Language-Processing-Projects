@@ -8,19 +8,21 @@ import java.util.Random;
 /**
  * Created by Erdem on 3/16/2016.
  */
-public class Classifier {
+public class FileClassifier {
     static String sDir="";
     static String parentPath = "";
-    public static void main(String[] args) throws IOException {
+    public static String[] main(String[] args) throws IOException {
 
-        sDir = "C:\\Users\\Erdem\\Desktop\\NLP\\Natural-Language-Processing-Project-1\\69yazar\\others";
-      parentPath= new File(sDir).getParentFile().getAbsolutePath();
+        sDir = args[0];
+        parentPath= new File(sDir).getParentFile().getAbsolutePath();
         new File(parentPath+"\\testData").mkdir();
         new File(parentPath+"\\trainingData").mkdir();
     fillTheData(sDir);
 
-      
-
+      String[] retArgs = new String [2];
+        retArgs[0] = parentPath+"\\testData";
+        retArgs[1] =parentPath+"\\trainingData";
+        return retArgs;
     }
 
     private static void decideOnTheFile(String absolutePath, int leftTestRight) throws IOException {
@@ -37,7 +39,7 @@ public class Classifier {
 
             Random random = new Random();
             int answer = random.nextInt(100) + 1;
-            if(answer > 60){
+            if(answer > 50){
                 targetFile = new File(parentPath +"\\testData\\"+authorName+"\\"+source.getName());
           //      System.out.println("Decided to copy it into  :"+ targetFile.getAbsolutePath());
             }else{

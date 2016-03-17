@@ -16,7 +16,8 @@ import java.util.*;
  */
 public class Main {
     static HashMap<String,HashMap<String,Integer>> fullTrainingData = new HashMap<>(); // this is from author to a hashmap <word,freq>
-
+    static String trainPath ="";
+    static String testPath ="";
     static HashMap<String,Integer> totalNumOfWords = new HashMap<>();
     static HashMap<String , Integer> corpus = new HashMap<>();
     static HashMap<String,Integer> numberOfDocuments = new HashMap<>();
@@ -46,8 +47,8 @@ public class Main {
         numberOfDocuments.clear();
         totalNumOfDocuments = 0;
         testDocs.clear();
-        delete( new File("C:\\Users\\Erdem\\Desktop\\NLP\\Natural-Language-Processing-Project-1\\69yazar\\trainingData"));
-        delete(new File("C:\\Users\\Erdem\\Desktop\\NLP\\Natural-Language-Processing-Project-1\\69yazar\\testData"));
+        delete( new File(trainPath));
+        delete(new File(testPath));
     }
 
     public static double makeFullTest(){
@@ -63,10 +64,12 @@ public class Main {
         return  countSucces/ (double) testDocs.size()*100;
     }
     public static double main(String[] args) throws IOException {
-        train("C:\\Users\\Erdem\\Desktop\\NLP\\Natural-Language-Processing-Project-1\\69yazar\\trainingData");
-        testTheData("C:\\Users\\Erdem\\Desktop\\NLP\\Natural-Language-Processing-Project-1\\69yazar\\testData");
+        trainPath = args[0];
+        testPath = args[1];
+        train(trainPath);
+        testTheData(testPath);
         double succRate =  makeFullTest();
-        emptyTheData();
+       // emptyTheData(); if you uncomment this, then folders will not remain and deleted when the program finishes
         return succRate;
     }
 
@@ -308,7 +311,6 @@ public class Main {
         double max = -1*Double.MAX_VALUE;
         double min = Double.MAX_VALUE;
         String authorRes = "";
-        String authorMin = "";
         double alpha = 0.1;
         HashMap<String ,Integer> document = testDoc.getDocumentData();
         double vocabSize = corpus.size(); // tum sozlukte unique sayi
@@ -329,8 +331,8 @@ public class Main {
             }
             rest -= Math.abs(avgWordLength.get(author) - testDoc.getAvgWordLength())*10;
             rest -= Math.abs(sentenceNumbers.get(author) - testDoc.getNumbOfSentence())*10;
-            rest -= Math.abs(commaWord.get(author) - testDoc.getCommaWord())*500;
-            rest -= Math.abs(questionmarks.get(author) - testDoc.getQuestionMark())*100;
+            rest -= Math.abs(commaWord.get(author) - testDoc.getCommaWord())*300;
+            rest -= Math.abs(questionmarks.get(author) - testDoc.getQuestionMark())*300;
             if (rest> max){
                 authorRes = author;
                 max = rest;
