@@ -28,10 +28,14 @@ public class RUNALL {
             String[] arr = new String [1];
             arr[0] = sDir;
             args= FileClassifier.main(arr);
-            counter += Main.main(args);
+            double overalRes =  (double) Math.round(Main.main(args) * 100) / 100;
+            counter += overalRes;
+            System.out.println((int)(i+1)+". try overal success rate is: "+ overalRes);
+
+
         }
-        System.out.println(run+" times system is run and all the folders are created randomly and deleted afterwards");
-        System.out.println("Success Rate is: "+ counter/run);
+
+
 
     }
 }

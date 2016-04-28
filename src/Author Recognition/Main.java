@@ -69,7 +69,7 @@ public class Main {
         train(trainPath);
         testTheData(testPath);
         double succRate =  makeFullTest();
-       // emptyTheData(); if you uncomment this, then folders will not remain and deleted when the program finishes
+        emptyTheData(); //if you uncomment this, then folders will not remain and deleted when the program finishes
         return succRate;
     }
 
@@ -329,10 +329,10 @@ public class Main {
                 rest += insideValue;
                 counter++;
             }
-            rest -= Math.abs(avgWordLength.get(author) - testDoc.getAvgWordLength())*10;
-            rest -= Math.abs(sentenceNumbers.get(author) - testDoc.getNumbOfSentence())*10;
-            rest -= Math.abs(commaWord.get(author) - testDoc.getCommaWord())*300;
-            rest -= Math.abs(questionmarks.get(author) - testDoc.getQuestionMark())*300;
+           rest -= Math.abs(avgWordLength.get(author) - testDoc.getAvgWordLength())*10;
+         //  rest -= Math.abs(sentenceNumbers.get(author) - testDoc.getNumbOfSentence())*10;
+         //  rest -= Math.abs(commaWord.get(author) - testDoc.getCommaWord())*300;
+        rest -= Math.abs(questionmarks.get(author) - testDoc.getQuestionMark())*300;
             if (rest> max){
                 authorRes = author;
                 max = rest;
