@@ -1,3 +1,5 @@
+package srcPos;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,8 +25,8 @@ public class Test {
         String outputFile = args[1];
         deserialize();
         readTestData(path);
-        printSuccessRate();
-      //  printOut(outputFile);
+        //printSuccessRate();
+        printOut(outputFile);
 
     }
 
@@ -66,13 +68,14 @@ public class Test {
         for (Sentence s : allSentences) {
             ArrayList<POS> testOutput = applyViterbi(s.getSentenceWordsInOrder());
             for (int i = 0; i < testOutput.size(); i++) {
-                String line = s.getSentenceWordsInOrder().get(i).getContent() + " " + testOutput.get(i).getType() + "\n";
+                String line = s.getSentenceWordsInOrder().get(i).getContent() + "|" + testOutput.get(i).getType() + "\n";
                 toBeWrittenOnOutputFile += line;
             }
+            if (s.getSentenceWordsInOrder().size() >0)
             toBeWrittenOnOutputFile += "\n";
         }
         PrintWriter writer = new PrintWriter(outputFile, "UTF-8");
-        writer.println(toBeWrittenOnOutputFile);
+        writer.print(toBeWrittenOnOutputFile);
         writer.close();
 
 
@@ -146,7 +149,7 @@ public class Test {
         ArrayList<POS> allPosList = new ArrayList<POS>(allPOS);
         double[][] viterbi = new double[allPosList.size()][words.size()];
         int[] backtrace = new int[words.size()];
-        POS previousPOS = findRealPOS("start"); // initial POS
+        POS previousPOS = findRealPOS("start"); // initial src.POS
         POS endPos = findRealPOS("end");
         for (int column = 0; column < words.size(); column++) {
             double maxValueForThisColumn = -100000;

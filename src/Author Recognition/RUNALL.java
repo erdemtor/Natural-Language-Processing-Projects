@@ -20,15 +20,15 @@ public class RUNALL {
                 break;
             }
         }
-        System.out.println("How many times do you want all system to run and test? \n(BE CAREFUL, if you did not put cleanData() back to the code in Main.java this will give extremely good results)");
-        System.out.println("and if you  put cleanData() back to the code in Main.java then when the program is over you wont be able to see testdata and trainingdata folders)");
+        System.out.println("How many times do you want all system to run and test? \n(BE CAREFUL, if you did not put cleanData() back to the code in MainOld.java this will give extremely good results)");
+        System.out.println("and if you  put cleanData() back to the code in MainOld.java then when the program is over you wont be able to see testdata and trainingdata folders)");
        int run = console.nextInt();
         double counter =0;
         for (double i = 0; i <run ; i++){
             String[] arr = new String [1];
             arr[0] = sDir;
             args= FileClassifier.main(arr);
-            double overalRes =  (double) Math.round(Main.main(args) * 100) / 100;
+            double overalRes =  (double) Math.round(MainOld.main(args) * 100) / 100;
             counter += overalRes;
             System.out.println((int)(i+1)+". try overal success rate is: "+ overalRes);
 

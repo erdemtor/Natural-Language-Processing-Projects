@@ -1,3 +1,5 @@
+package srcPos;
+
 import java.io.Serializable;
 
 /**
@@ -57,8 +59,9 @@ public class Word implements Serializable {
         this.pos = pos;
     }
 
-    public Word() {
-
+    public Word(String s, POS guessedPOS) {
+        this.content = s;
+        this.pos = guessedPOS;
     }
 
 }

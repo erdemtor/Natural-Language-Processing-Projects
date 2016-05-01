@@ -1,3 +1,5 @@
+package srcPos;
+
 import java.io.*;
 import java.util.*;
 
@@ -12,10 +14,13 @@ public class Main {
     public static HashMap<POS, HashMap<String, Double>> posToWordPossibilities = new HashMap<POS, HashMap<String, Double>>(); // MAth.loglari alindi bunlarin
     public static HashMap<String, HashMap<String, Double>> posNamesToWordPossibilities = new HashMap<String, HashMap<String, Double>>(); // MAth.loglari alindi bunlarin
     public static HashMap<String, HashMap<String, Double>> posNamesToPosNamesProbablities = new HashMap<String, HashMap<String, Double>>();
-    public  static  HashSet<String> allWords = new HashSet<String>();
-    public static void main(String[] args) throws IOException {
-        readAndCalculateEverything(args[0], args[1]);
+    public static HashSet<String> allWords = new HashSet<String>();
 
+    public static void main(String[] args) throws IOException {
+        if (args.length >= 2)
+            readAndCalculateEverything(args[0], args[1]);
+        if (args.length < 2)
+            readAndCalculateEverything(args[0], "postag");
     }
 
     public static void readAndCalculateEverything(String path, String POSType) throws IOException {
@@ -35,6 +40,7 @@ public class Main {
             posNamesToPosNamesProbablities.put(p.getType(), probabilities);
         }
         serialize(posNamesToWordPossibilities, posNamesToPosNamesProbablities, POSType);
+
     }
 
     public static void serialize(HashMap<String, HashMap<String, Double>> posNamesToWordPossibilities, HashMap<String, HashMap<String, Double>> posNamesToPosNamesProbablities, String POSType) throws IOException {
@@ -168,13 +174,12 @@ public class Main {
     }
 
     public static ArrayList<Sentence> readTrainingData(String path, String POSType) throws FileNotFoundException {
-
         int posNum = 4;
         if (!POSType.contains("c")) {
             posNum = 3;
         }
         Scanner scanFile = new Scanner(new File(path));
-        boolean isNewSentence = true;
+        boolean isNewSentence = false;
         Sentence currentSentence = new Sentence();
         while (scanFile.hasNextLine()) {
             String line = scanFile.nextLine();
@@ -194,12 +199,13 @@ public class Main {
                     currentSentence.getSentenceWordsInOrder().add(currentWord);
                     allPOS.add(pos);
                     allWords.add(currentWord.getContent());
-                    isNewSentence = false;
                 }
+                isNewSentence = false;
             } else {
                 isNewSentence = true;
             }
         }
+        allSentences.add(currentSentence);
         allPOS.add(new POS("start"));
         allPOS.add(new POS("end"));
         return allSentences;

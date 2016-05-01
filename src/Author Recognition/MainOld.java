@@ -14,7 +14,7 @@ import java.util.*;
  *
  *
  */
-public class Main {
+public class MainOld {
     static HashMap<String,HashMap<String,Integer>> fullTrainingData = new HashMap<>(); // this is from author to a hashmap <word,freq>
     static String trainPath ="";
     static String testPath ="";
