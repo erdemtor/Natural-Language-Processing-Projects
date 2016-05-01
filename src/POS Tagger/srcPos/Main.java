@@ -21,6 +21,19 @@ public class Main {
             readAndCalculateEverything(args[0], args[1]);
         if (args.length < 2)
             readAndCalculateEverything(args[0], "postag");
+
+        System.out.println("Main is over");
+        clearAll();
+    }
+
+    private static void clearAll() {
+        allSentences.clear();
+        allPOS.clear();
+        posToWordPossibilities.clear();
+        posNamesToPosNamesProbablities.clear();
+        allWords.clear();
+        posToWords.clear();
+        posNamesToWordPossibilities.clear();
     }
 
     public static void readAndCalculateEverything(String path, String POSType) throws IOException {
@@ -181,8 +194,13 @@ public class Main {
         Scanner scanFile = new Scanner(new File(path));
         boolean isNewSentence = false;
         Sentence currentSentence = new Sentence();
+       int i = 0;
         while (scanFile.hasNextLine()) {
             String line = scanFile.nextLine();
+            i++;
+            if(allSentences.size() == 305){
+                int a = 8;
+            }
             if (!line.equals("")) {
                 if (isNewSentence) {
                     allSentences.add(currentSentence);
@@ -205,6 +223,7 @@ public class Main {
                 isNewSentence = true;
             }
         }
+
         allSentences.add(currentSentence);
         allPOS.add(new POS("start"));
         allPOS.add(new POS("end"));

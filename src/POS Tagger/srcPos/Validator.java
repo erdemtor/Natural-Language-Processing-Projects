@@ -31,12 +31,12 @@ public class Validator {
         String org = currentDirectory+"\\src\\POS Tagger\\posType.ser";*/
         //   System.out.println(org);
         //  System.out.println(org.equals("C:\\Users\\Erdem\\Desktop\\NLP\\Natural-Language-Processing-Project-1\\src\\POS Tagger\\posType.ser"));
-        FileInputStream fileIn = new FileInputStream("src\\POS Tagger\\posType.ser");
+        FileInputStream fileIn = new FileInputStream("posType.ser");
         ObjectInputStream in = new ObjectInputStream(fileIn);
         POSType = (String) in.readObject();
         in.close();
         fileIn.close();
-        fileIn = new FileInputStream("src\\POS Tagger\\posNamesToPosNamesProbablities.ser");
+        fileIn = new FileInputStream("posNamesToPosNamesProbablities.ser");
         in = new ObjectInputStream(fileIn);
         posNamesToPosNamesProbablities = (HashMap<String, HashMap<String, Double>>) in.readObject();
         for (String p : posNamesToPosNamesProbablities.keySet()) {
@@ -48,7 +48,7 @@ public class Validator {
         for (String pos : posNames) {
             confusionMatrix.put(pos, new HashMap<>());
         }
-        for (int i = 0; i < realSentences.size(); i++) {
+        for (int i = 0; i < guessedSentences.size(); i++) {
             Sentence realSent = realSentences.get(i);
             Sentence guessedSent = guessedSentences.get(i);
             for (int j = 0; j < realSent.getSentenceWordsInOrder().size(); j++) {

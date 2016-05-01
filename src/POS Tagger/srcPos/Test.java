@@ -17,7 +17,6 @@ public class Test {
     public static HashSet<POS> allPOS = new HashSet<POS>();
     public static HashMap<POS, HashMap<String, Double>> posToWords;
     public static HashMap<POS, HashMap<String, Double>> posToWordPossibilities = new HashMap<POS, HashMap<String, Double>>();
-    public static TrainingData trainingData;
     public static HashSet<String> allWords = new HashSet<String>();
 
     public static void main(String[] args) throws IOException, ClassNotFoundException {
@@ -25,8 +24,9 @@ public class Test {
         String outputFile = args[1];
         deserialize();
         readTestData(path);
-        //printSuccessRate();
+        printSuccessRate();
         printOut(outputFile);
+        System.out.println("Test is over");
 
     }
 
@@ -74,6 +74,7 @@ public class Test {
             if (s.getSentenceWordsInOrder().size() >0)
             toBeWrittenOnOutputFile += "\n";
         }
+        int x = 5;
         PrintWriter writer = new PrintWriter(outputFile, "UTF-8");
         writer.print(toBeWrittenOnOutputFile);
         writer.close();
