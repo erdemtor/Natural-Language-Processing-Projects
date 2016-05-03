@@ -59,7 +59,7 @@ The example states in the test data there were 9 words labelled as noun and the 
 ## Too boring? There is an easy way to RUN THEM ALL##
 
 I made an runner class whic receives all the parameters and runs the 3 task one by one. Nothing has changed internally,
-this is just to simplify the life that is already too boring.
+this is just to simplify the life.
 
 ###  RunThemAll.java  ###
 
