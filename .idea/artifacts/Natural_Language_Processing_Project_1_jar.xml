@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Natural-Language-Processing-Project-1:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Natural_Language_Processing_Project_1_jar</output-path>
+    <root id="archive" name="Natural-Language-Processing-Project-1.jar">
+      <element id="module-output" name="Natural-Language-Processing-Project-1" />
+    </root>
+  </artifact>
+</component>
