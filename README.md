@@ -62,6 +62,7 @@ I made an runner class whic receives all the parameters and runs the 3 task one 
 this is just to simplify the life.
 
 ###  RunThemAll.java  ###
+You can find the jar file in Natural-Language-Processing-Project-1\src\POS Tagger, 
 
 Receives several parameters, you can compile it as well but I extracted the Jar file in the project which can be run easily with the following command:
 
