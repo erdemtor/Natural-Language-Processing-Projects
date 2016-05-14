@@ -1,10 +1,10 @@
 # Natural-Language-Processing-Project-1
 
 Very easy to run.
-Specify “RUNALL” class as the real main class to run both first and second scripts in a row with the data passage handled. You must use the following commands
+First go to PROJECT_PATH\src\Author Recognition and run the following command
+        
+        java -jar Natural-Language-Processing-Project-1.jar
 
-        javac RUNALL.java
-        java RUNALL
 
 Program will ask the directory in which authors and their files are located.
 
