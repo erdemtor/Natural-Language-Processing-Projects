@@ -1,7 +1,10 @@
 # Natural-Language-Processing-Project-1
 
 Very easy to run.
-Specify “RUNALL” class as the real main class to run both first and second scripts in a row with the data passage handled.
+First go to PROJECT_PATH\src\Author Recognition and run the following command
+        
+        java -jar Natural-Language-Processing-Project-1.jar
+
 
 Program will ask the directory in which authors and their files are located.
 
@@ -13,8 +16,20 @@ input_path/authorName/fileX
 
 This is the second project of the course Natural Language Processing in Bogazici University during the semester Spring 2016
 Implementation of Viterbi Algorithm on the dataset Metubank in java
+## The easy way to RUN THEM ALL##
 
-## How to run the code ##
+I made an runner class which receives all the parameters and runs the 3 task one by one. Nothing has changed internally,
+this is just to simplify the life.
+
+###  RunThemAll.java  ###
+You can find the jar file in Natural-Language-Processing-Project-1\src\POS Tagger, 
+
+Receives several parameters, you can compile it as well but I extracted the Jar file in the project which can be run easily with the following command:
+
+        java -jar RunThemAll.jar trainingFilePath [postag/cpostag] testFilePath outputPath goldStandardPath
+        
+
+## How to run the code manually ##
 Assuming all files are compiled using: 
     `javac <filename>.java`
 
@@ -56,14 +71,3 @@ This program will output the confusion matrix in a json form and an example is t
 The example states in the test data there were 9 words labelled as noun and the program guessed 7 of them as noun and 2 of them as adjective. Besides, there were 15 Puncs and all of them were correctly labelled by the program
 
 
-## Too boring? There is an easy way to RUN THEM ALL##
-
-I made an runner class whic receives all the parameters and runs the 3 task one by one. Nothing has changed internally,
-this is just to simplify the life.
-
-###  RunThemAll.java  ###
-
-Receives several parameters, you can compile it as well but I extracted the Jar file in the project which can be run easily with the following command:
-
-        java -jar RunThemAll.jar trainingFilePath [postag/cpostag] testFilePath outputPath goldStandardPath
-        
