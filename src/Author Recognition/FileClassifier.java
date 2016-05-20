@@ -15,13 +15,13 @@ public class FileClassifier {
 
         sDir = args[0];
         parentPath= new File(sDir).getParentFile().getAbsolutePath();
-        new File(parentPath+"\\testData").mkdir();
-        new File(parentPath+"\\trainingData").mkdir();
+        new File(parentPath+"/testData").mkdir();
+        new File(parentPath+"/trainingData").mkdir();
     fillTheData(sDir);
 
       String[] retArgs = new String [2];
-        retArgs[0] = parentPath+"\\testData";
-        retArgs[1] =parentPath+"\\trainingData";
+        retArgs[0] = parentPath+"/testData";
+        retArgs[1] =parentPath+"/trainingData";
         return retArgs;
     }
 
@@ -33,17 +33,17 @@ public class FileClassifier {
 
         String authorName = source.getParentFile().getName();
         if(leftTestRight <= 0 ){
-            targetFile = new File(parentPath +"\\trainingData\\"+authorName+"\\"+source.getName());
+            targetFile = new File(parentPath +"/trainingData/"+authorName+"/"+source.getName());
        //     System.out.println("Decided to copy it into  :"+ targetFile.getAbsolutePath());
         }else{
 
             Random random = new Random();
             int answer = random.nextInt(100) + 1;
             if(answer > 50){
-                targetFile = new File(parentPath +"\\testData\\"+authorName+"\\"+source.getName());
+                targetFile = new File(parentPath +"/testData/"+authorName+"/"+source.getName());
           //      System.out.println("Decided to copy it into  :"+ targetFile.getAbsolutePath());
             }else{
-                targetFile = new File(parentPath +"\\trainingData\\"+authorName+"\\"+source.getName());
+                targetFile = new File(parentPath +"/trainingData/"+authorName+"/"+source.getName());
             //    System.out.println("Decided to copy it into  :"+ targetFile.getAbsolutePath());
             }
         }
@@ -58,13 +58,13 @@ public class FileClassifier {
         File[] faFiles =dir.listFiles();
         for(File file: faFiles){
             if(file.isDirectory()){
-                new File(parentPath+"\\trainingData\\"+file.getName()).mkdir();
-                new File(parentPath+"\\testData\\"+file.getName()).mkdir();
+                new File(parentPath+"/trainingData/"+file.getName()).mkdir();
+                new File(parentPath+"/testData/"+file.getName()).mkdir();
                 fillTheData(file.getAbsolutePath());
             }
             else{
                 int totalNumOfFiles = faFiles.length;
-                int alreadyTest = new File(parentPath+"\\testData\\"+file.getParentFile().getName()).listFiles().length;
+                int alreadyTest = new File(parentPath+"/testData/"+file.getParentFile().getName()).listFiles().length;
                 decideOnTheFile(file.getAbsolutePath(),(totalNumOfFiles*4/10) - alreadyTest);
             }
         }
