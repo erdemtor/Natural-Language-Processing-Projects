@@ -71,3 +71,5 @@ This program will output the confusion matrix in a json form and an example is t
 The example states in the test data there were 9 words labelled as noun and the program guessed 7 of them as noun and 2 of them as adjective. Besides, there were 15 Puncs and all of them were correctly labelled by the program
 
 
+For Turkish Speaking Developers:
+        Projeden bagimsiz sekilde Turkiye illeri arasindaki mesafe bir json dosyasi olarak projede bulunuyor.
